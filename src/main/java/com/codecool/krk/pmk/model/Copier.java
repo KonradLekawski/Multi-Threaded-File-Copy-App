@@ -19,7 +19,8 @@ public class Copier implements Runnable {
         try {
 
             int c;
-            while((c = inputStream.read()) != -1) {
+
+            while(((c = inputStream.read())) != -1 && !Thread.currentThread().isInterrupted()) {
                 outputStream.write(c);
             }
 
