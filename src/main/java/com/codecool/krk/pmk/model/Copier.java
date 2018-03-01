@@ -1,5 +1,7 @@
 package com.codecool.krk.pmk.model;
 
+import com.codecool.krk.pmk.view.CopierView;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -10,11 +12,13 @@ public class Copier implements Runnable {
     private Integer size;
     private int portionAmount;
     private int portionSize;
+    private int sumPortion;
 
     public Copier(InputStream inputStream, OutputStream outputStream) {
         this.inputStream = inputStream;
         this.outputStream = outputStream;
         this.portionSize = 512;
+        this.sumPortion = 0;
     }
 
     public void run() {
@@ -41,17 +45,50 @@ public class Copier implements Runnable {
         for (int i = 0; i < portionAmount; i ++) {
             inputStream.read(portion);
             outputStream.write(portion);
+            sumPortion += portionSize;
+            if (this.countPercent() == 0.1) {
+                this.buildStatusBar(this.countPercent());
+            } else if (this.countPercent() == 0.2) {
+                this.buildStatusBar(this.countPercent());
+            } else if (this.countPercent() == 0.3) {
+                this.buildStatusBar(this.countPercent());
+            } else if (this.countPercent() == 0.4) {
+                this.buildStatusBar(this.countPercent());
+            } else if (this.countPercent() == 0.5) {
+                this.buildStatusBar(this.countPercent());
+            } else if (this.countPercent() == 0.6) {
+                this.buildStatusBar(this.countPercent());
+            } else if (this.countPercent() == 0.7) {
+                this.buildStatusBar(this.countPercent());
+            }
+//            this.buildStatusBar(this.countPercent());
         }
 
     }
 
     private void copyRest() throws  IOException {
-        byte[] rest = new byte[size % portionAmount];
+        byte[] rest = new byte[size % portionSize];
 
         if(rest.length > 0) {
             inputStream.read(rest);
             outputStream.write(rest);
+            sumPortion += size % portionSize;
         }
+    }
+
+    private void buildStatusBar(double progressPercentage) {
+        CopierView copierView = new CopierView();
+        try {
+            copierView.updateProgress(progressPercentage);
+            Thread.sleep(20);
+
+        } catch (InterruptedException e) {}
+    }
+
+    private double countPercent() {
+
+        double countPercent = (double) sumPortion/size;
+        return Math.round(countPercent*100.0)/100.0;
     }
 
 }

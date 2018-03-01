@@ -1,6 +1,7 @@
 package com.codecool.krk.pmk;
 
 import com.codecool.krk.pmk.model.Copier;
+import com.codecool.krk.pmk.view.CopierView;
 import com.sun.org.apache.xpath.internal.SourceTree;
 import sun.text.CodePointIterator;
 
@@ -28,11 +29,9 @@ public class App
             FileInputStream inputStream = new FileInputStream(new File(from));
             FileOutputStream outputStream = new FileOutputStream(new File(to));
             (new Thread(new Copier(inputStream, outputStream))).start();
-
         } catch (FileNotFoundException e) {
 
             System.out.println("File not found");
         }
-
     }
 }
