@@ -46,7 +46,7 @@ public class Copier implements Runnable {
     }
 
     private void copyRest() throws  IOException {
-        byte[] rest = new byte[size % portionAmount];
+        byte[] rest = new byte[size % portionSize];
 
         if(rest.length > 0) {
             inputStream.read(rest);
