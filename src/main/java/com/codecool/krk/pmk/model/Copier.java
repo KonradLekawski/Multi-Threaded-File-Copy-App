@@ -46,7 +46,7 @@ public class Copier implements Runnable {
             inputStream.read(portion);
             outputStream.write(portion);
             sumPortion += portionSize;
-            this.buildStatusBar(this.countPercent());z
+            this.buildStatusBar(this.countPercent());
         }
 
     }
