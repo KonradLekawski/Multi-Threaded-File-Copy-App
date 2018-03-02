@@ -46,22 +46,7 @@ public class Copier implements Runnable {
             inputStream.read(portion);
             outputStream.write(portion);
             sumPortion += portionSize;
-            if (this.countPercent() == 0.1) {
-                this.buildStatusBar(this.countPercent());
-            } else if (this.countPercent() == 0.2) {
-                this.buildStatusBar(this.countPercent());
-            } else if (this.countPercent() == 0.3) {
-                this.buildStatusBar(this.countPercent());
-            } else if (this.countPercent() == 0.4) {
-                this.buildStatusBar(this.countPercent());
-            } else if (this.countPercent() == 0.5) {
-                this.buildStatusBar(this.countPercent());
-            } else if (this.countPercent() == 0.6) {
-                this.buildStatusBar(this.countPercent());
-            } else if (this.countPercent() == 0.7) {
-                this.buildStatusBar(this.countPercent());
-            }
-//            this.buildStatusBar(this.countPercent());
+            this.buildStatusBar(this.countPercent());z
         }
 
     }
@@ -73,6 +58,7 @@ public class Copier implements Runnable {
             inputStream.read(rest);
             outputStream.write(rest);
             sumPortion += size % portionSize;
+            this.buildStatusBar(this.countPercent());
         }
     }
 
