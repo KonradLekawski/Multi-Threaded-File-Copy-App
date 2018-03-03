@@ -10,15 +10,17 @@ public class Copier implements Runnable {
     private InputStream inputStream;
     private OutputStream outputStream;
     private Integer size;
-    private int portionAmount;
     private int portionSize;
     private int sumPortion;
+    private CopierView copierView;
 
-    public Copier(InputStream inputStream, OutputStream outputStream) {
+
+    public Copier(InputStream inputStream, OutputStream outputStream, CopierView view) {
         this.inputStream = inputStream;
         this.outputStream = outputStream;
         this.portionSize = 512;
         this.sumPortion = 0;
+        this.copierView = view;
     }
 
     public void run() {
@@ -37,7 +39,7 @@ public class Copier implements Runnable {
 
     private void copyPortion() throws IOException {
 
-        portionAmount = size / portionSize;
+        int portionAmount = size / portionSize;
         System.out.println(portionAmount);
 
         byte[] portion = new byte[portionSize];
@@ -63,12 +65,13 @@ public class Copier implements Runnable {
     }
 
     private void buildStatusBar(double progressPercentage) {
-        CopierView copierView = new CopierView();
         try {
             copierView.updateProgress(progressPercentage);
             Thread.sleep(20);
 
-        } catch (InterruptedException e) {}
+        } catch (InterruptedException e) {
+
+        }
     }
 
     private double countPercent() {
