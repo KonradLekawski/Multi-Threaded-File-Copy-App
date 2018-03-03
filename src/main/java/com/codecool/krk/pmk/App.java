@@ -1,9 +1,9 @@
 package com.codecool.krk.pmk;
 
+import com.codecool.krk.pmk.controller.CopierController;
 import com.codecool.krk.pmk.model.Copier;
+import com.codecool.krk.pmk.service.CopierService;
 import com.codecool.krk.pmk.view.CopierView;
-import com.sun.org.apache.xpath.internal.SourceTree;
-import sun.text.CodePointIterator;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,19 +19,17 @@ public class App
 {
     public static void main( String[] args )
     {
+
         Scanner scanner = new Scanner(System.in);
-        System.out.println("from : ");
-        String from = scanner.nextLine();
-        System.out.println("to : ");
-        String to = scanner.nextLine();
+        CopierService service = new CopierService();
+        CopierController controller = new CopierController(service);
 
-        try {
-            FileInputStream inputStream = new FileInputStream(new File(from));
-            FileOutputStream outputStream = new FileOutputStream(new File(to));
-            (new Thread(new Copier(inputStream, outputStream))).start();
-        } catch (FileNotFoundException e) {
-
-            System.out.println("File not found");
+        while (true) {
+            try {
+                controller.start(scanner);
+            } catch (FileNotFoundException e) {
+                System.out.println("File not found");
+            }
         }
     }
 }
