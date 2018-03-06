@@ -1,26 +1,37 @@
 package com.codecool.krk.pmk.service;
 
-import java.util.Scanner;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.concurrent.ThreadPoolExecutor;
 
+import com.codecool.krk.pmk.exception.ExitApp;
+import com.codecool.krk.pmk.exception.NotTerminatedException;
 import com.codecool.krk.pmk.model.Copier;
 import com.codecool.krk.pmk.view.CopierView;
 
 public class CopierService {
+    private CopierView view;
+    private ThreadPoolExecutor executor;
 
-    public void start(Scanner scanner) throws FileNotFoundException {
+    public CopierService(CopierView view, ThreadPoolExecutor executor) {
+        this.view = view;
+        this.executor = executor;
+    }
 
-        System.out.println("from : ");
-        String from = scanner.nextLine();
-        System.out.println("to : ");
-        String to = scanner.nextLine();
+    public void start() throws FileNotFoundException {
+        FileInputStream inputStream = view.getInputStream();
+        FileOutputStream outputStream = view.getOutputStream();
+        executor.submit(new Copier(inputStream, outputStream));
 
-        CopierView copierView = new CopierView();
-        FileInputStream inputStream = new FileInputStream(new File(from));
-        FileOutputStream outputStream = new FileOutputStream(new File(to));
-        (new Thread(new Copier(inputStream, outputStream, copierView))).start();
+    }
+
+    public void end() throws ExitApp, NotTerminatedException {
+        executor.shutdownNow();
+        if (executor.isTerminated()) {
+            throw new ExitApp();
+        } else {
+            throw new NotTerminatedException();
+        }
     }
 }
