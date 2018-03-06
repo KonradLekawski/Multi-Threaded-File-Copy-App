@@ -1,15 +1,17 @@
 package com.codecool.krk.pmk;
 
+import com.codecool.krk.pmk.controller.CopierController;
+import com.codecool.krk.pmk.exception.ExitApp;
+import com.codecool.krk.pmk.exception.NotTerminatedException;
 import com.codecool.krk.pmk.model.Copier;
+import com.codecool.krk.pmk.service.CopierService;
 import com.codecool.krk.pmk.view.CopierView;
-import com.sun.org.apache.xpath.internal.SourceTree;
-import sun.text.CodePointIterator;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.util.Scanner;
+import java.util.concurrent.*;
+
+import static java.util.concurrent.Executors.newFixedThreadPool;
 
 /**
  * Hello world!
@@ -17,21 +19,25 @@ import java.util.Scanner;
  */
 public class App 
 {
-    public static void main( String[] args )
-    {
+    public static void main( String[] args ) {
+
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(4, 4,
+                50, TimeUnit.MINUTES, new LinkedBlockingQueue<Runnable>());
         Scanner scanner = new Scanner(System.in);
-        System.out.println("from : ");
-        String from = scanner.nextLine();
-        System.out.println("to : ");
-        String to = scanner.nextLine();
+        CopierView view = new CopierView(scanner);
+        CopierService service = new CopierService(view,executor);
+        CopierController controller = new CopierController(service, view);
 
-        try {
-            FileInputStream inputStream = new FileInputStream(new File(from));
-            FileOutputStream outputStream = new FileOutputStream(new File(to));
-            (new Thread(new Copier(inputStream, outputStream))).start();
-        } catch (FileNotFoundException e) {
-
-            System.out.println("File not found");
+        while (true) {
+            try {
+                controller.start();
+            } catch (FileNotFoundException e) {
+                System.out.println("File not found");
+            } catch (NotTerminatedException e) {
+                System.out.println("wait until all operations done");
+            } catch (ExitApp e) {
+                break;
+            }
         }
     }
 }
